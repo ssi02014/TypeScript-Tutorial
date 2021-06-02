@@ -4,4 +4,4 @@
 <br />
 
 ## 🔖 목차
-* [Lecture 1](https://github.com/ssi02014/TypeScript-Tutorial/tree/master/lecture1)
+### [Lecture 1](https://github.com/ssi02014/TypeScript-Tutorial/tree/master/lecture1)
