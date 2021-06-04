@@ -168,3 +168,87 @@
   if (return x > 0) x = 1;
 ```
 - 즉, 똑같이 CPU에서 실행되는 구문이라도 `x > 0`처럼 return 키워드 없이 결괏값을 반환하는 실행문이 필요하다. 이를 `표현식 문`이라고 구분해서 부른다.
+
+<br />
+
+### 🏃 복합 실행문
+- 프래그래밍 언어에서 `if`와 같은 구문은 다음처럼 조건을 만족하면 단순히 한 줄의 실행문만을 싱행하는 형태로 설계한다.
+```ts
+  let a = 2
+  let b = 1
+
+  if(a > b) console.log(a); 
+```
+- 위와 같은 설계가 가능한 이유는 `복합 실행문(compound statement)`이라는 또 다른 형태를 함께 제공하기 때문이다.
+- 대부분의 언어에서 복합 실행문은 `중괄호 {}`를 사용해 이용한다.
+```ts
+  let a = 2;
+  let b = 1;
+
+  if (a > b) {
+    console.log(a);
+    console.log(a + b);
+  }
+```
+- 복합 실행문은 컴파일로 하여금 여러 실행문을 한 개처럼 인식하게 한다. 따라서 컴파일러는 앞의 형태로 작성된 if문은 여전히 한 줄의 실행문으로 인식한다.
+
+<br />
+
+### 🏃 함수 몸통과 복합 실행문
+- `function` 키워드로 만드는 함수는 반드시 몸통을 `중괄호 {}`로 감싸야 하는데, 중괄호는 복합 실행문을 의미한다.
+- 따라서 함수 몸통은 여러 줄로 구현할 수 있다.
+```ts
+  function f() {
+    let x = 1;
+    let y = 2;
+    let result = x + y + 10;
+  }
+```
+
+<br />
+
+### 🏃 retrun 키워드
+- 실행문은 CPU에서 실행된 결과를 알려주지 않는다. 예를들어, 함수 몸통을 복합 실행문으로 구현한 다음 함수는 true나 false를 반환하지 않는다.
+- 실행문 기반 언어는 이 문제를 해결하기 위해 `return`이라는 키워드를 도입했다.
+```ts
+  function isGreater(a: number, b: number): boolean {
+    a > b; //true나 false를 반환하지 않음
+  }
+
+  function isGreater(a: number, b: number): boolean {
+    return a > b; //true나 false를 반환 함
+  }
+```
+- 그런데 `return` 키워드는 반드시 함수 몸통에서만 사용할 수 있다는 제약이 있다.
+- `if(return x > 0) x = 1`과 같은 코드를 방지하기 위함이다.
+
+<br />
+
+### 🏃 표현식 문 스타일의 화살표 함수 구현
+- 밑에 코드들은 같은 동작을 한다.
+- 밑에 코드들 중에 두 번째 코드는 `{ a > b }`가 아닌 단순히 `a > b`로 구현되어 있다. 즉, 함수 몸통이 `표현식`으로 구현되어 있다. 그리고 표현식은 값을 반환하는 실행문이므로 `return`또한 생략되었다. 
+```ts
+  const isGreater = (a: number, b: number): boolean => {
+    return a > b;
+  };
+
+  const isGreater = (a: number, b: number): boolean => a > b;
+```
+
+<br />
+
+- `return`키워드는 복합 실행문 `{}` 안에서만 사용할 수 있어 다음과 같은 코드는 구문 오류가 발생한다.
+```ts
+  const isGreater = (a: number, b: number): boolean => return a > b; //구문 오류 발생
+  const isGreater = (a: number, b: number): boolean => { return a > b }; //올바른 문법
+```
+
+<br />
+
+## 👨🏻‍💻 일등 함수 살펴보기
+### 🏃 콜백 함수
+- `일등 함수(first-class function)`은 프로그래밍 언어가 제공하는 기능이다.
+- 일등 함수 기능을 제공하는 언어에서 함수는 `함수 표현식`이라는 일종의 값이다. 따라서 변수에 담을 수 있다. 또한, 이 말은 함수 표현식을 매개변수로 받을 수 있다는 것을 의미한다.
+- 매개변수 형태로 동작하는 함수를 `콜백 함수(callback function)`이라고 한다.
+```ts
+```

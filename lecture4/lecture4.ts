@@ -1,4 +1,5 @@
-let functionExpression = function(a: number, b: number): number { return a + b; }
-let value = functionExpression(1, 2);
+const isGreater1 = (a: number, b: number): boolean => {
+  return a > b;
+};
 
-console.log(value); //3
+const isGreater2 = (a: number, b: number): boolean => a > b;
