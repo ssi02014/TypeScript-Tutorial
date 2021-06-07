@@ -1,5 +1,22 @@
-const isGreater1 = (a: number, b: number): boolean => {
-  return a > b;
-};
+export class C {
+  static whoAreYou(): string {
+    return `I'm class C`;
+  }
+}
 
-const isGreater2 = (a: number, b: number): boolean => a > b;
+export class D {
+  static whoAreYou(): string {
+    return `I'm class D`;
+  }
+
+  hi(): string {
+    return `hi`;
+  }
+}
+
+console.log(C.whoAreYou());
+console.log(D.whoAreYou());
+
+let d:D = new D;
+
+console.log(d.hi());

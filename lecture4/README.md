@@ -251,4 +251,202 @@
 - 일등 함수 기능을 제공하는 언어에서 함수는 `함수 표현식`이라는 일종의 값이다. 따라서 변수에 담을 수 있다. 또한, 이 말은 함수 표현식을 매개변수로 받을 수 있다는 것을 의미한다.
 - 매개변수 형태로 동작하는 함수를 `콜백 함수(callback function)`이라고 한다.
 ```ts
+  export const init = (callback: () => void): void => {
+    console.log('default initialization finished');
+    callback();
+    console.log('all initialization finished');
+  }
+
+  init(() => console.log('custom initialization finished'));
+
+  //출력
+  /*
+    default initialization finished
+    custom initialization finished
+    all initialization finished
+  */
 ```
+<br />
+
+### 🏃 중첩 함수
+- 함수형 언어에서 함수는 변수에 담긴 함수 표현식이므로 함수 안에 또 다른 함수를 `중첩(nested)`해서 구현할 수 있다.
+```ts
+  const calc = (value: number, cb: (num: number) => void): void => {
+    let add = (a: number, b: number): number => a + b;
+
+    function multiply(a: number, b: number): number { 
+      return a * b; 
+    }
+
+    let result = multiply(add(1, 2), value); //add(1, 2) === 3, value === 30
+    cb(result);
+  }
+
+  calc(30, (result: number) => console.log(`result is ${result}`)); //result is 90
+```
+
+<br />
+
+### 🏃 고차 함수와 클로저, 부분 함수
+- `고차 함수(high-order function)`는 또 다른 함수를 반환하는 함수를 말한다.
+- 함수형 언어에서 함수는 단순히 함수 표현식이라는 값이므로 다른 함수를 반환할 수 있다.
+- 고차 함수 기능이 없다면 함수형 프로그래밍이 불가능할 정도로 고차 함수는 매우 중요한 기능이다.
+```ts
+  const add1 = (a: number, b: number): number => a + b; //보통 함수
+  const add2 = (a: number): number => (number: number) => (b: number): number => a + b //고차 함수
+```
+- 위 코드에서 add1은 일반적인 함수로 선언되었지만 add2는 고차 함수로 선언되었다.
+- 위 코드를 좀 더 이해하기 쉬운 형태로 다시 구현하면 밑에 코드처럼 구현할 수 있다.
+```ts
+  type NumberToNumberFunc = (number: number) => number; //함수 시그니처 정의
+
+  export const add = (a: number): NumberToNumberFunc => {
+    const _add: NumberToNumberFunc = (b: number): number => {
+      return a + b; //클로저
+    }
+    return _add;
+  }
+
+  let fn: NumberToNumberFunc = add(1);
+  let result = fn(2);
+
+  console.log(result); //3
+  console.log(add(1)(2)); //3
+```
+- 위 코드에서 흥미로운 것은 `a`는 `add 함수`의 매개 변수이고 `b`는 `_add 함수`의 매개 변수이다. 즉, `_add 함수`의 관점에서 보면 `a`는 `외부에 선언된 변수`이다. 함수형 프로그래밍에서 이와 같은 형태를 `클로저(Closure)`라고 한다.
+- 고차 함수는 이 `클로저` 기능이 반드시 필요하다.
+
+<br />
+
+## 👨🏻‍💻 함수 구현 기법
+### 🏃 매개변수 기본값 지정
+- 선택적 매개변수는 항상 그 값이 `undefined`로 고정되어 있다. 만일, 함수 호출 시 인수를 전달하지 않더라도 매개변수에 어떤 값을 설정하고 싶다면 매개 변수의 기본 값을 지정할 수 있다. 이를 `디폴트 매개변수(default parameter)`라고 한다.
+```ts
+  export type Person = { name: string, age: number };
+
+  export const makePerson = (name: string, age: number = 10): Person => {
+    const person = { name: name, age: age }
+    //const person = { name, age } 
+    //타입스크립트는 매개변수의 이름과 똑같은 이름의 속성 가진 객체를 생성 시 속성 값 생략이 가능하다.
+
+    return person;
+  }
+
+  console.log(makePerson('Jeon')); // { name: 'Jeon', age: 10 }
+  console.log(makePerson('Jeon', 27)); // { name: 'Jeon', age: 27 }
+```
+
+<br />
+
+### 🏃 객체를 반환하는 화살표 함수
+```ts
+  export const makePerson = (name: string, age: number = 10): Person => { name, age };
+```
+- 위와 같은 코드로 구현하면 타입스크립트 컴파일러는 `중괄호 {}`를 객체가 아닌 복합 실행문으로 해석합니다. 
+- 따라서 컴파일러가 `{}` 를 객체로 해석하게 하려면 다음처럼 객체를 소괄호로 감싸주어야 합니다.
+```ts
+  export const makePerson = (name: string, age: number = 10): Person => ({ name, age });
+```
+
+<br />
+
+### 🏃 매개변수에 비구조화 할당문 사용하기
+- 함수의 매개변수도 변수의 일종이므로 비구조화 할당문을 적용할 수 있다.
+```ts
+  export type Person = { name: string, age: number };
+
+  const printPerson = ({ name, age }: Person): void => {
+    console.log(`name: ${name}, age: ${age}`);
+  };
+
+  printPerson({ name: 'Jack', age: 10 });
+```
+
+<br />
+
+### 🏃 색인 키와 값으로 객체 만들기
+- ES6 이후 자바스크립트에서는 다음과 같은 코드를 작성할 수 있습니다.
+```ts
+  const makeObject = (key, value) => ({
+    [key]: value,
+  });
+```
+- 위 코드는 `[key]`의 부분이 'name'이면, `{ name: value }`형태, 'firstName'이면 `{ firstName: value }` 형태의 객체를 생성합니다.
+```ts
+  export type KeyValueType = {
+    [key: string]: string
+  }
+
+  const makeObject = (key: string, value: string): KeyValueType => ({
+    [key]: value,
+  });
+
+console.log(makeObject('name', 'Jeon')); // { name: 'Jeon' }
+console.log(makeObject('firstName', 'Jeon')); // { firstName: 'Jeon' }
+```
+
+<br />
+
+## 👨🏻‍💻 클래스와 메서드
+### 🏃 function 함수와 this 키워드
+- 타입스크립트의 `function` 키워드로 만든 함수는 `Function`이란 클래스의 인스턴스, 즉 함수는 객체입니다.
+- 객체 지향 언어에서 인스턴스는 `this` 키워드를 사용할 수 있습니다.
+- 따라서, 타입스크립트에서 `function` 키워드로 만든 함수에 `this` 키워드를 사용할 수 있습니다.
+- 반면에 화살표 함수에는 `this`키워드를 사용할 수 없습니다.
+
+<br />
+
+### 🏃 메서드
+- 타입스크립트에서 `메서드(method)`는 function으로 만든 함수 표현식을 담고 있는 속성입니다.
+- 함수와 메서드의 차이는 쉽게 말하면 메서드는 `클래스 및 객체(Object)`와 연관되어 있는 함수이다. 즉, 클래스 또는 객체 내에 선언되어 있는 함수이다.
+- 함수는 클래스 및 객체와 상관없이 `독립적으로 존재`하는 것을 함수라 한다. 즉, 함수가 메서드보다 더 큰 개념이라고 생각할 수 있다.
+```ts
+  export class A {
+    constructor(public value: number = 1) {
+      this.value = value;
+    } 
+
+    method(): void {
+      console.log(`value: ${this.value}`);
+    }
+  }
+
+  let a = new A(2);
+  a.method(); //value: 2
+```
+
+<br />
+
+### 🏃 정적 메서드
+- 클래스의 속성은 `static 수정자(modifier)`를 속성 앞에 붙여서 정적으로 만들 수 있다.
+- 메서드 또한 속성이므로 이름 앞에 `static`을 붙여 정적 메서드를 만들 수 있다.
+- 정적 메서드는 `인스턴스 생성 없이 바로 호출`할 수 있습니다. 단, 인스턴스에서는 호출 할 수 없습니다.
+```ts
+  export class C {
+    static whoAreYou(): string {
+      return `I'm class C`;
+    }
+  }
+
+  export class D {
+    static whoAreYou(): string {
+      return `I'm class D`;
+    }
+
+    hi(): string {
+      return `hi`;
+    }
+  }
+
+  console.log(C.whoAreYou());
+  console.log(D.whoAreYou());
+
+  let d: D = new D;
+
+  console.log(d.whoAreYou()) //오류
+  console.log(d.hi());
+```
+- 위 코드는 C와 D라는 두 클래스가 whoAreYou라는 같은 이름의 정적 메서드를 구현하고 있다.
+- 클래스 메서드는 `클래스 이름.정적 메서드()`형태로 호출한다.
+
+<br />
