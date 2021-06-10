@@ -108,3 +108,53 @@
 - 보통 제네릭 형태로 구현된 함수는 원칙적으로는 `identity<boolean>(true)`처럼 `타입 변수`를 다음과 같은형태로명시해 주어야 한다.
 - 하지만 타입스크립트는 타입 변수 부분을 생략할 수 있게 한다. 타입스크립트는 타입 변수가 생략된 제네릭 함수를 만나면 `타입 추론`을 통해 생략된 타입을 찾아낸다.
 
+<br />
+
+## 👨🏻‍💻 배열의 filter, map, reduce,
+### 🏃 filter
+- filter 메서드는 `콜백 함수`의 결과 값을 `true`로 만드는 원소들로만 구성된 `별도의 배열`을 반환한다. 
+```ts
+  filter(callback: (value: T, index?: number): boolean): T[];
+```
+```ts
+  const numList: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+  let odd: number[] = numList.filter(value => value % 2 !== 0); 
+  let even: number[] = numList.filter(value => value % 2 === 0); 
+
+  console.log(odd); //[ 1, 3, 5, 7, 9 ]
+  console.log(even); //[ 2, 4, 6, 8, 10 ]
+```
+
+<br />
+
+### 🏃 map
+- 배열의 각 원소별로 지정된 함수를 실행한 결과로 구성된 `새로운 배열`을 `반환`한다.
+- forEach와 비슷하게 작동하지만 forEach는 새로운 배열을 반환하지 않음.
+- map 메서드는 filter와 다르게 입력 타입과 다른 타입의 배열을 만들 수 있다.
+```ts
+  map(callback: (value: T, index?: number): Q): Q[];
+```
+```ts
+  let squers: number[] = [1, 2, 3, 4, 5]
+
+  squers = squers.map((value:number) => value * value);
+
+  console.log(squers); //[ 1, 4, 9, 16, 25 ]
+```
+
+<br />
+
+### 🏃 reduce
+- `누산기(accumulator)`및 `배열의 각 값(좌에서 우)`에 대해 (누산된)`한 값`으로 줄도록 함수를 적용
+```ts
+  reduce(callback: (result: T, value: T), initialValue: T): T
+```
+```ts
+  let reduceSum: number = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    .reduce((result: number, value: number) => result + value);
+
+  console.log(reduceSum); //55
+```
+
+<br />
