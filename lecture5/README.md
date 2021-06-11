@@ -158,3 +158,77 @@
 ```
 
 <br />
+
+## 👨🏻‍💻 순수 함수와 배열
+### 🏃 순수 함수
+- 순수 함수는 `부수 효과(side-effect)`가 없는 함수를 말한다.
+- 부수 효과란 함수가 가진 고유한 목적 이외에 다른 효과가 나타나는 것을 의미하며 `부작용`이라고 한다.
+- 부수 효과가 있는 함수는 `불순 함수(impure function)`라고 한다.
+- 다음은 순수 함수의 조건이다.
+```
+  1. 함수 몸통에 입출력 관련 코드가 없어야 한다.
+  2. 함수 몸통에는 매개 변수 값을 변경시키지 않는다.(즉, const나 readonly 형태로만 사용한다)
+  3. 함수는 몸통에서 만들어진 결과를 즉시 반환한다.
+  4. 함수 내부에 전역 변수나 정적 변수를 사용하지 않는다.
+  5. 함수가 예외를 발생시키지 않는다.
+  6. 함수가 콜백 함수로 구현되었거나 함수 몸통에 콜백 함수를 사용하는 코드가 없다.
+  7. 함수 몸통에 Promise와 같은 비동기 방식으로 동작하는 코드가 없다.
+```
+
+<br />
+
+### 🏃 깊은 복사와 얕은 복사
+- 프로그래밍 언어에서 어떤 변숫값을 다른 변숫값으로 설정하는 것을 복사(copy)라고 표현한다.
+- 복사에는 `깊은 복사(deep-copy`와 `얕은 복사(shallow-copy)` 두 종류가 있다.
+- 순수 함수를 구현할 때 매개변수가 `불변성을 유지`해야 하므로, 매개변수를 가공하려고 할 때 `깊은 복사`를 실행해 매개 변수 값이 변경되지 않게 해야 한다.
+- 깊은 복사는 대상 변수 값이 바뀔 때 `원본 변수 값은 그대로인 형태로 동작`한다.
+
+<br />
+
+### 🏃 전개 연산자와 깊은 복사
+- 배열에서 `전개 연산자(...)`를 사용해 배열을 복사하면 깊은 복사를 할 수 있다.
+```ts
+  const oArray: number[] = [1, 2, 3, 4];
+  const deepCopiedArray: number[] = [...oArray];
+  deepCopiedArray[0] = 0;
+  console.log(oArray, deepCopiedArray) //[1, 2, 3, 4] [0, 2, 3, 4]
+```
+
+<br />
+
+- Array클래스는 sort메서드를 제공한다. 그런데 sort 메서드는 원본 배열의 내용을 변경한다.
+```ts
+  export const pureSort = <T>(array: readonly T[]): T[] => {
+    let deepCopied = [...array];
+    return deepCopied.sort();
+  }
+
+  let beforeSort: number[] = [6, 2, 9, 0];
+  const afterSort = pureSort<number>(beforeSort);
+
+  console.log(beforeSort, afterSort); //[ 6, 2, 9, 0 ] [ 0, 2, 6, 9 ]
+```
+- 다음 `pustSort 함수`는 readonly 타입으로 입력 배열의 내용을 유지한 채 정렬할 수 있도록 `전개 연산자`의 깊은 복사 기능을 사용했다.
+
+<br />
+
+## 👨🏻‍💻 튜플
+- 자바스크립트에서는 튜플이 없으며 단순히 배열의 한 종류로 취급된다.
+- `any[]`의 형태는 타입스크립트의 타입 기능을 무력화하므로, 타입스크립트는 튜플의 타입 표기법을 배열과 다르게 선언한다.
+```ts
+  const array: number[] = [1, 2, 3, 4];
+  const tuple: [boolean, string] = [true, 'thje result is ok'];
+```
+
+<br />
+
+- 보통 튜플을 사용할 때는 `타입 별칭(alias)`으로 튜플의 의미를 명확하게 한다.
+- 예를 들어, `[boolean, string]`이라고 타입을 지정하는 것보다 다음 처럼 타입 별칭을 사용해 이 튜플이 어떤 용도로 사용되는지 좀 더 분명하게 알려주는 것이 좋다.
+```ts
+  type ResultType =[boolean, string];
+
+  const array: number[] = [1, 2, 3, 4];
+  const tuple: ResultType = [true, 'the result is ok'];
+```
+
+<br />
