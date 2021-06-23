@@ -6,8 +6,6 @@ Utility Type 학습 내용
 
 ## 👨🏻‍💻 Utility Type
 
-<br />
-
 ### 🏃 Partial
 
 - 파셜(Partial)타입은 특정 타입의 부분 집합을 만족하는 타입을 정의할 수 있다.

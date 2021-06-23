@@ -19,3 +19,4 @@
 - [Lecture 5: 배열과 튜플](https://github.com/ssi02014/TypeScript-Tutorial/tree/master/lecture5)
 - [Lecture 6: 반복기(Iterator)와 생성기(generator)](https://github.com/ssi02014/TypeScript-Tutorial/tree/master/lecture6)
 - [TypeScript HandBook: 유틸리티 타입(Utility Type)](https://github.com/ssi02014/TypeScript-Tutorial/tree/master/utilityType)
+- [TypeScript HandBook: 맵드 타입(Mapped Type)](https://github.com/ssi02014/TypeScript-Tutorial/tree/master/MadppedType)
